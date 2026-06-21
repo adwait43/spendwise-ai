@@ -1,0 +1,569 @@
+
+!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>CineMatch AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0A0A0F;
+      --card:    #13131A;
+      --card2:   #1A1A24;
+      --primary: #E50914;
+      --secondary: #F5C518;
+      --text:    #FFFFFF;
+      --muted:   #9090A0;
+      --border:  rgba(255,255,255,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 60px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ─── Header ─────────────────────────────────────── */
+    header {
+      padding: 60px 16px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 300px;
+      background: radial-gradient(circle, rgba(229,9,20,0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .logo {
+      font-size: 42px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .tagline {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    /* ─── Section Headings ───────────────────────────── */
+    .section-heading {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    section { margin: 40px 0; }
+
+    /* ─── Counter / progress strip ───────────────────── */
+    .rating-status {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 16px 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .rating-counter {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .rating-counter span { color: var(--secondary); }
+
+    .rating-hint {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .rating-hint.ready { color: #2ECC71; font-weight: 700; }
+
+    /* ─── Movie Grid ──────────────────────────────────── */
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 1024px) {
+      .movie-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .movie-grid { grid-template-columns: repeat(2, 1fr); }
+      .logo { font-size: 32px; }
+    }
+
+    .movie-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 16px;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(229,9,20,0.4);
+      box-shadow: 0 12px 30px rgba(229,9,20,0.15);
+    }
+
+    .movie-card.rated {
+      border-color: rgba(245,197,24,0.45);
+    }
+
+    .movie-emoji {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .movie-title {
+      font-size: 14px;
+      font-weight: 700;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .stars {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .star {
+      font-size: 22px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.18);
+      transition: color 0.15s, transform 0.1s;
+      user-select: none;
+    }
+
+    .star:hover { transform: scale(1.15); }
+    .star.filled { color: var(--secondary); }
+
+    /* ─── Get Recommendations Button ─────────────────── */
+    .action-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-top: 36px;
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, var(--primary) 0%, #B20710 100%);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      box-shadow: 0 10px 32px rgba(229,9,20,0.35);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 40px rgba(229,9,20,0.5);
+    }
+
+    .btn-primary:active:not(:disabled) { transform: translateY(0); }
+
+    .btn-primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .spinner.show { display: block; }
+
+    .error-msg {
+      color: #FF6B6B;
+      font-size: 13px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .error-msg.show { display: block; }
+
+    /* ─── Recommendations Section ────────────────────── */
+    #recommendationsSection { display: none; }
+
+    .rec-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 1024px) {
+      .rec-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .rec-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .rec-card {
+      background: linear-gradient(160deg, var(--card) 0%, var(--card2) 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 18px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .rec-emoji { font-size: 40px; margin-bottom: 12px; }
+
+    .rec-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.3;
+    }
+
+    .rec-match {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: rgba(245,197,24,0.12);
+      border: 1px solid rgba(245,197,24,0.3);
+      color: var(--secondary);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    /* ─── Reset Button ────────────────────────────────── */
+    .reset-wrap {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .btn-reset {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      padding: 12px 28px;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-reset:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    /* ─── Offline banner ──────────────────────────────── */
+    .offline-banner {
+      display: none;
+      margin: 0 auto 24px;
+      max-width: 1100px;
+      padding: 12px 20px;
+      background: rgba(229,9,20,0.1);
+      border: 1px solid rgba(229,9,20,0.3);
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #FF6B6B;
+      text-align: center;
+    }
+
+    .offline-banner.show { display: block; }
+
+    /* ─── Animations ─────────────────────────────────── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ─────────────────────────────────────── -->
+  <header>
+    <div class="logo">🎬 CineMatch AI</div>
+    <div class="tagline">Discover Your Next Favourite Movie</div>
+  </header>
+
+  <div class="container">
+
+    <!-- Offline warning -->
+    <div class="offline-banner" id="offlineBanner">
+      ⚠️ Can't reach the backend at localhost:5000 — make sure <code>python app.py</code> is running.
+    </div>
+
+    <!-- ─── RATE MOVIES SECTION ───────────────────────── -->
+    <section>
+      <div class="section-heading">⭐ Rate Movies</div>
+      <div class="section-sub">Rate as many as you like — the more you rate, the better your matches.</div>
+
+      <div class="rating-status">
+        <div class="rating-counter">You've rated <span id="ratedCount">0</span>/<span id="totalCount">20</span> movies</div>
+        <div class="rating-hint" id="ratingHint">Rate at least 3 movies to get recommendations</div>
+      </div>
+
+      <div class="movie-grid" id="movieGrid">
+        <!-- Movie cards injected by JavaScript -->
+      </div>
+
+      <div class="action-wrap">
+        <button class="btn-primary" id="recommendBtn" disabled onclick="getRecommendations()">
+          <div class="spinner" id="btnSpinner"></div>
+          <span id="btnLabel">🎯 Get My Recommendations</span>
+        </button>
+        <div class="error-msg" id="errorMsg"></div>
+      </div>
+    </section>
+
+    <!-- ─── RECOMMENDATIONS SECTION ───────────────────── -->
+    <section id="recommendationsSection">
+      <div class="section-heading">🎯 Recommended For You</div>
+      <div class="section-sub">Based on people who rate movies the way you do.</div>
+
+      <div class="rec-grid" id="recGrid">
+        <!-- Recommendation cards injected by JavaScript -->
+      </div>
+
+      <div class="reset-wrap">
+        <button class="btn-reset" onclick="resetRatings()">🔄 Rate Different Movies</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    /* ─── CONFIG ──────────────────────────────────────── */
+    const API = 'http://localhost:5000';
+    const MIN_RATINGS_REQUIRED = 3;
+
+    let movies = [];          // catalog loaded from /api/movies
+    let userRatings = {};     // { "Movie Title": stars }
+
+    /* ─── INIT — load movie catalog on page load ─────── */
+    (async function init() {
+      try {
+        const res = await fetch(API + '/api/movies');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        movies = data.movies || [];
+        document.getElementById('offlineBanner').classList.remove('show');
+      } catch (err) {
+        document.getElementById('offlineBanner').classList.add('show');
+        movies = [];
+      }
+      renderMovieGrid();
+      updateRatingStatus();
+    })();
+
+    /* ─── RENDER MOVIE GRID ───────────────────────────── */
+    function renderMovieGrid() {
+      const grid = document.getElementById('movieGrid');
+      document.getElementById('totalCount').textContent = movies.length;
+
+      grid.innerHTML = movies.map((movie, index) => `
+        <div class="movie-card" id="card-${index}">
+          <div class="movie-emoji">🎬</div>
+          <div class="movie-title">${escHtml(movie.title)}</div>
+          <div class="stars" data-index="${index}">
+            ${[1,2,3,4,5].map(n => `<span class="star" data-value="${n}" onclick="rateMovie(${index}, ${n})">★</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ─── RATE A MOVIE ────────────────────────────────── */
+    function rateMovie(index, stars) {
+      const movie = movies[index];
+      userRatings[movie.title] = stars;
+
+      // Update the star display for this card
+      const starContainer = document.querySelector(`.stars[data-index="${index}"]`);
+      starContainer.querySelectorAll('.star').forEach(star => {
+        const value = parseInt(star.dataset.value, 10);
+        star.classList.toggle('filled', value <= stars);
+      });
+
+      document.getElementById(`card-${index}`).classList.add('rated');
+      updateRatingStatus();
+    }
+
+    /* ─── UPDATE COUNTER + BUTTON STATE ──────────────── */
+    function updateRatingStatus() {
+      const count = Object.keys(userRatings).length;
+      document.getElementById('ratedCount').textContent = count;
+
+      const btn = document.getElementById('recommendBtn');
+      const hint = document.getElementById('ratingHint');
+
+      if (count >= MIN_RATINGS_REQUIRED) {
+        btn.disabled = false;
+        hint.textContent = "You're all set — get your recommendations!";
+        hint.classList.add('ready');
+      } else {
+        btn.disabled = true;
+        hint.textContent = `Rate at least ${MIN_RATINGS_REQUIRED} movies to get recommendations`;
+        hint.classList.remove('ready');
+      }
+    }
+
+    /* ─── GET RECOMMENDATIONS ─────────────────────────── */
+    async function getRecommendations() {
+      const btn      = document.getElementById('recommendBtn');
+      const spinner  = document.getElementById('btnSpinner');
+      const label    = document.getElementById('btnLabel');
+      const errorMsg = document.getElementById('errorMsg');
+
+      btn.disabled = true;
+      spinner.classList.add('show');
+      label.textContent = 'Finding your matches…';
+      errorMsg.classList.remove('show');
+
+      try {
+        const res = await fetch(API + '/api/recommend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ratings: userRatings }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to get recommendations');
+        }
+
+        renderRecommendations(data.recommendations || []);
+        document.getElementById('recommendationsSection').style.display = 'block';
+        document.getElementById('recommendationsSection').scrollIntoView({ behavior: 'smooth' });
+
+      } catch (err) {
+        errorMsg.textContent = '⚠️ ' + err.message;
+        errorMsg.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        spinner.classList.remove('show');
+        label.textContent = '🎯 Get My Recommendations';
+      }
+    }
+
+    /* ─── RENDER RECOMMENDATIONS ──────────────────────── */
+    function renderRecommendations(recommendations) {
+      const grid = document.getElementById('recGrid');
+
+      if (!recommendations.length) {
+        grid.innerHTML = '<div style="color:var(--muted)">No recommendations found — try rating a few more movies.</div>';
+        return;
+      }
+
+      grid.innerHTML = recommendations.map((rec, i) => `
+        <div class="rec-card" style="animation-delay:${i * 0.08}s">
+          <div class="rec-emoji">🎬</div>
+          <div class="rec-title">${escHtml(rec.title)}</div>
+          <div class="rec-match">${Math.round(rec.score * 100)}% match</div>
+        </div>
+      `).join('');
+    }
+
+    /* ─── RESET ───────────────────────────────────────── */
+    function resetRatings() {
+      userRatings = {};
+      renderMovieGrid();
+      updateRatingStatus();
+      document.getElementById('recommendationsSection').style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ─── XSS GUARD ──────────────────────────────────── */
+    function escHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
