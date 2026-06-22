@@ -111,7 +111,7 @@ def ask_groq_for_advice():
         )
 
         if response.status_code != 200:
-            return get_fallback_tips()
+            return [f"Groq Error:{response.text}"]
 
         content = response.json()["choices"][0]["message"]["content"]
 
@@ -127,8 +127,8 @@ def ask_groq_for_advice():
 
         return tips
 
-    except Exception:
-        return get_fallback_tips()
+    except Exception as e:
+        return [str(e)]
 
 
 @app.route("/api/advice", methods=["POST"])
