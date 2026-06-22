@@ -43,7 +43,6 @@
       padding: 0 20px;
     }
 
-    /* ─── Header ─────────────────────────────────────── */
     header {
       padding: 56px 16px 28px;
       text-align: center;
@@ -91,7 +90,6 @@
       gap: 8px;
     }
 
-    /* ─── Glass card base ─────────────────────────────── */
     .glass-card {
       background: rgba(255,255,255,0.035);
       backdrop-filter: blur(14px);
@@ -107,7 +105,6 @@
       box-shadow: 0 16px 40px rgba(108,99,255,0.12);
     }
 
-    /* ─── Budget Card ─────────────────────────────────── */
     .budget-title {
       font-size: 14px;
       color: var(--muted);
@@ -176,7 +173,76 @@
 
     .budget-warning.show { display: block; }
 
-    /* ─── Form ─────────────────────────────────────────── */
+    .set-budget-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .set-budget-row label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .set-budget-row input {
+      flex: 1;
+      min-width: 120px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .set-budget-row input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108,99,255,0.18);
+    }
+
+    .set-budget-row input::placeholder { color: var(--muted); font-weight: 500; }
+
+    .btn-set-budget {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary) 0%, #8A7CFF 100%);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 6px 18px rgba(108,99,255,0.3);
+    }
+
+    .btn-set-budget:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(108,99,255,0.45);
+    }
+
+    .budget-saved-msg {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      display: none;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .budget-saved-msg.show { display: block; }
+
     .form-row {
       display: flex;
       gap: 12px;
@@ -244,11 +310,7 @@
 
     .btn-add:active { transform: translateY(0); }
 
-    /* ─── Category Breakdown ──────────────────────────── */
-    .cat-row {
-      margin-bottom: 16px;
-    }
-
+    .cat-row { margin-bottom: 16px; }
     .cat-row:last-child { margin-bottom: 0; }
 
     .cat-top {
@@ -287,7 +349,6 @@
       padding: 24px 12px;
     }
 
-    /* ─── Transactions ─────────────────────────────────── */
     .tx-row {
       display: flex;
       align-items: center;
@@ -321,17 +382,9 @@
       text-overflow: ellipsis;
     }
 
-    .tx-cat {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 500;
-    }
+    .tx-cat { font-size: 12px; color: var(--muted); font-weight: 500; }
 
-    .tx-amount {
-      font-size: 15px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
+    .tx-amount { font-size: 15px; font-weight: 800; white-space: nowrap; }
 
     .tx-delete {
       width: 30px;
@@ -350,15 +403,9 @@
       transition: background 0.2s, transform 0.15s;
     }
 
-    .tx-delete:hover {
-      background: rgba(255,92,92,0.2);
-      transform: scale(1.08);
-    }
+    .tx-delete:hover { background: rgba(255,92,92,0.2); transform: scale(1.08); }
 
-    /* ─── AI Coaching ──────────────────────────────────── */
-    .ai-card {
-      text-align: center;
-    }
+    .ai-card { text-align: center; }
 
     .btn-ai {
       display: inline-flex;
@@ -431,7 +478,6 @@
 
     .ai-fallback-note.show { display: block; }
 
-    /* ─── Animations ──────────────────────────────────── */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -439,12 +485,13 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ─── Responsive ──────────────────────────────────── */
     @media (max-width: 560px) {
       .logo { font-size: 28px; }
       .budget-amount { font-size: 26px; }
       .glass-card { padding: 18px; border-radius: 16px; }
       .form-row { flex-direction: column; }
+      .set-budget-row { flex-direction: column; align-items: stretch; }
+      .btn-set-budget { width: 100%; }
     }
   </style>
 </head>
@@ -457,7 +504,6 @@
 
   <div class="container">
 
-    <!-- ─── BUDGET CARD ────────────────────────────────── -->
     <section>
       <div class="glass-card" id="budgetCard">
         <div class="budget-title">Monthly Budget</div>
@@ -479,10 +525,24 @@
         </div>
         <div class="progress-pct" id="progressPct">0% used</div>
         <div class="budget-warning" id="budgetWarning">⚠️ You've exceeded your monthly budget!</div>
+
+        <!-- SET BUDGET ROW -->
+        <div class="set-budget-row">
+          <label for="budgetInputField">✏️ Set Budget:</label>
+          <input
+            type="number"
+            id="budgetInputField"
+            placeholder="Enter your budget"
+            min="1"
+            step="1"
+          />
+          <button class="btn-set-budget" onclick="saveBudget()">Save</button>
+          <div class="budget-saved-msg" id="budgetSavedMsg">✅ Budget updated!</div>
+        </div>
+
       </div>
     </section>
 
-    <!-- ─── ADD EXPENSE FORM ───────────────────────────── -->
     <section>
       <div class="section-heading">➕ Add Expense</div>
       <div class="glass-card">
@@ -516,7 +576,6 @@
       </div>
     </section>
 
-    <!-- ─── CATEGORY BREAKDOWN ─────────────────────────── -->
     <section>
       <div class="section-heading">📊 Spending by Category</div>
       <div class="glass-card" id="categoryCard">
@@ -525,7 +584,6 @@
       </div>
     </section>
 
-    <!-- ─── RECENT TRANSACTIONS ────────────────────────── -->
     <section>
       <div class="section-heading">🧾 Recent Transactions</div>
       <div class="glass-card" id="transactionsCard">
@@ -534,7 +592,6 @@
       </div>
     </section>
 
-    <!-- ─── AI COACHING ─────────────────────────────────── -->
     <section>
       <div class="section-heading">🤖 AI Coaching</div>
       <div class="glass-card ai-card">
@@ -550,10 +607,10 @@
   </div>
 
   <script>
-    /* ─── CONFIG ──────────────────────────────────────── */
     const API_BASE = 'https://spendwise-ai-1luy.vercel.app';
     const STORAGE_KEY = 'spendwise_expenses';
-    const BUDGET = 15000;
+    const BUDGET_KEY  = 'spendwise_budget';
+    const DEFAULT_BUDGET = 15000;
 
     const CATEGORIES = [
       { key: 'Food',          emoji: '🍔' },
@@ -571,9 +628,36 @@
       'Reduce food spending by 20%',
     ];
 
+    function loadBudget() {
+      const saved = localStorage.getItem(BUDGET_KEY);
+      return saved ? parseInt(saved, 10) : DEFAULT_BUDGET;
+    }
+
+    let BUDGET = loadBudget();
+
+    function saveBudget() {
+      const input = document.getElementById('budgetInputField');
+      const val = parseInt(input.value, 10);
+
+      if (!val || val <= 0) {
+        input.style.borderColor = 'var(--red)';
+        setTimeout(() => input.style.borderColor = '', 1200);
+        return;
+      }
+
+      BUDGET = val;
+      localStorage.setItem(BUDGET_KEY, BUDGET);
+      input.value = '';
+
+      const msg = document.getElementById('budgetSavedMsg');
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 2500);
+
+      renderAll();
+    }
+
     let expenses = loadExpenses();
 
-    /* ─── STORAGE ─────────────────────────────────────── */
     function loadExpenses() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -587,7 +671,6 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
     }
 
-    /* ─── HELPERS ─────────────────────────────────────── */
     function escHtml(s) {
       return String(s)
         .replace(/&/g, '&amp;')
@@ -609,27 +692,16 @@
       return expenses.reduce((sum, e) => sum + e.amount, 0);
     }
 
-    /* ─── ADD / DELETE ────────────────────────────────── */
     document.getElementById('expenseForm').addEventListener('submit', function (e) {
       e.preventDefault();
-
       const titleInput = document.getElementById('titleInput');
       const amountInput = document.getElementById('amountInput');
       const categorySelect = document.getElementById('categorySelect');
-
       const title = titleInput.value.trim();
       const amount = parseFloat(amountInput.value);
       const category = categorySelect.value;
-
       if (!title || !amount || amount <= 0) return;
-
-      expenses.push({
-        id: Date.now(),
-        title,
-        amount,
-        category,
-      });
-
+      expenses.push({ id: Date.now(), title, amount, category });
       saveExpenses();
       this.reset();
       renderAll();
@@ -641,7 +713,6 @@
       renderAll();
     }
 
-    /* ─── RENDER: BUDGET ──────────────────────────────── */
     function renderBudget() {
       const spent = getTotalSpent();
       const remaining = BUDGET - spent;
@@ -660,30 +731,21 @@
       fill.style.background = color;
 
       document.getElementById('progressPct').textContent = Math.round(pct) + '% used';
+      document.getElementById('budgetWarning').classList.toggle('show', spent > BUDGET);
 
-      const warning = document.getElementById('budgetWarning');
-      warning.classList.toggle('show', spent > BUDGET);
+      const budgetInput = document.getElementById('budgetInputField');
+      if (!budgetInput.value) budgetInput.placeholder = String(BUDGET);
     }
 
-    /* ─── RENDER: CATEGORY BREAKDOWN ──────────────────── */
     function renderCategoryBreakdown() {
       const totals = {};
-      expenses.forEach(e => {
-        totals[e.category] = (totals[e.category] || 0) + e.amount;
-      });
-
+      expenses.forEach(e => { totals[e.category] = (totals[e.category] || 0) + e.amount; });
       const total = getTotalSpent();
       const entries = Object.entries(totals).sort((a, b) => b[1] - a[1]);
-
       const empty = document.getElementById('categoryEmpty');
       const list = document.getElementById('categoryList');
 
-      if (!entries.length) {
-        empty.style.display = 'block';
-        list.innerHTML = '';
-        return;
-      }
-
+      if (!entries.length) { empty.style.display = 'block'; list.innerHTML = ''; return; }
       empty.style.display = 'none';
 
       list.innerHTML = entries.map(([cat, amount]) => {
@@ -697,11 +759,9 @@
             <div class="cat-bar-track">
               <div class="cat-bar-fill" data-target="${pct}"></div>
             </div>
-          </div>
-        `;
+          </div>`;
       }).join('');
 
-      // Animate bars in after they're attached to the DOM
       requestAnimationFrame(() => {
         list.querySelectorAll('.cat-bar-fill').forEach(bar => {
           bar.style.width = bar.dataset.target + '%';
@@ -709,22 +769,12 @@
       });
     }
 
-    /* ─── RENDER: TRANSACTIONS ────────────────────────── */
     function renderTransactions() {
       const empty = document.getElementById('transactionsEmpty');
       const list = document.getElementById('transactionsList');
-
-      if (!expenses.length) {
-        empty.style.display = 'block';
-        list.innerHTML = '';
-        return;
-      }
-
+      if (!expenses.length) { empty.style.display = 'block'; list.innerHTML = ''; return; }
       empty.style.display = 'none';
-
-      const sorted = [...expenses].reverse();
-
-      list.innerHTML = sorted.map(e => `
+      list.innerHTML = [...expenses].reverse().map(e => `
         <div class="tx-row">
           <div class="tx-emoji">${categoryEmoji(e.category)}</div>
           <div class="tx-info">
@@ -733,24 +783,20 @@
           </div>
           <div class="tx-amount">${formatINR(e.amount)}</div>
           <button class="tx-delete" onclick="deleteExpense(${e.id})" aria-label="Delete">✕</button>
-        </div>
-      `).join('');
+        </div>`).join('');
     }
 
-    /* ─── RENDER ALL ──────────────────────────────────── */
     function renderAll() {
       renderBudget();
       renderCategoryBreakdown();
       renderTransactions();
     }
 
-    /* ─── AI COACHING ─────────────────────────────────── */
     async function getAICoaching() {
       const btn = document.getElementById('aiBtn');
       const spinner = document.getElementById('aiSpinner');
       const label = document.getElementById('aiBtnLabel');
       const fallbackNote = document.getElementById('aiFallbackNote');
-      const tipsGrid = document.getElementById('tipsGrid');
 
       btn.disabled = true;
       spinner.classList.add('show');
@@ -761,19 +807,11 @@
         const res = await fetch(API_BASE + '/api/advice', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            expenses,
-            total: getTotalSpent(),
-            budget: BUDGET,
-          }),
+          body: JSON.stringify({ expenses, total: getTotalSpent(), budget: BUDGET }),
         });
-
         if (!res.ok) throw new Error('Server error');
-
         const data = await res.json();
-        const tips = (data.tips && data.tips.length) ? data.tips : FALLBACK_TIPS;
-        renderTips(tips);
-
+        renderTips((data.tips && data.tips.length) ? data.tips : FALLBACK_TIPS);
       } catch (err) {
         fallbackNote.classList.add('show');
         renderTips(FALLBACK_TIPS);
@@ -785,16 +823,13 @@
     }
 
     function renderTips(tips) {
-      const tipsGrid = document.getElementById('tipsGrid');
-      tipsGrid.innerHTML = tips.map((tip, i) => `
+      document.getElementById('tipsGrid').innerHTML = tips.map((tip, i) => `
         <div class="tip-card" style="animation-delay:${i * 0.1}s">
           <div class="tip-emoji">💡</div>
           <div class="tip-text">${escHtml(tip)}</div>
-        </div>
-      `).join('');
+        </div>`).join('');
     }
 
-    /* ─── INIT ────────────────────────────────────────── */
     renderAll();
   </script>
 </body>
